@@ -1,0 +1,42 @@
+services:
+  mongodb:
+    image: mongo:7.0
+    container_name: mongodb_ecommerce
+    restart: always
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+
+  jenkins:
+    image: jenkins/jenkins:lts
+    container_name: jenkins_ecommerce
+    restart: always
+    ports:
+      - "8080:8080"
+      - "50000:50000"
+    volumes:
+      - jenkins_home:/var/jenkins_home
+      - /var/run/docker.sock:/var/run/docker.sock
+
+  airflow:
+    build: .
+    container_name: airflow_single
+    restart: always
+    depends_on:
+      - mongodb
+    environment:
+      - AIRFLOW__CORE__EXECUTOR=SequentialExecutor
+      - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=sqlite:////opt/airflow/airflow.db
+    ports:
+      - "8081:8080"
+    volumes:
+      - ./dags:/opt/airflow/dags
+      - ./logs:/opt/airflow/logs
+      - ./plugins:/opt/airflow/plugins
+      - ./data:/opt/airflow/data
+    command: bash -c "airflow db migrate && airflow users create --username airflow --firstname Admin --lastname Admin --role Admin --email admin@example.com --password airflow && airflow scheduler & exec airflow webserver"
+
+volumes:
+  jenkins_home:
+  mongodb_data:

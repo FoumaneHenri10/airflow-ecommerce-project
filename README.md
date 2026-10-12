@@ -11,7 +11,7 @@ Projet de Mastère 2 Data Engineering visant à industrialiser le traitement et 
 
 ## 🚀 Fonctionnalités du DAG (`ecommerce_sales_pipeline`)
 1. **FileSensor :** Détection automatisée de la présence du fichier source CSV.
-2. **Contrôle Qualité :** Vérification de l'intégrité des lignes, gestion des valeurs nulles et isolation des anomalies dans un fichier d'erreurs (`errors.csv`)->(ou le mécanisme de gestion des erreurs), qui n'apparaîtra pas toujours car il est géré dynamiquement par le script Python d'ingestion/transformation (probablement dans fusion_dataset.py ou du DAG) au moment où les données sont traitées : si le jeu de données propre ne contient aucune ligne corrompue critique lors du run, le fichier n'est pas forcément écrit sur le disque, ou il est généré à la volée par le script dans le conteneur.
+2. **Contrôle Qualité** : Vérification de l'intégrité des données, filtrage des anomalies selon les règles de gestion métier, et isolation automatique des lignes rejetées dans un fichier d'erreurs dédié (errors.csv).
 3. **Indicateurs Métier :** Calcul du nombre total de commandes, du chiffre d'affaires global, du panier moyen, du top 10 des produits et de la ventilation géographique par région.
 4. **Historisation NoSQL :** Sérialisation et stockage des métriques sous forme de documents JSON historisés dans MongoDB.
 
